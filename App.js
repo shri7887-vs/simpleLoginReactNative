@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,20 +8,30 @@ import {
   StatusBar,
   TextInput,
   Button,
-} from 'react-native'
-import { Formik } from 'formik'
-import * as yup from 'yup'
+  Touchable,
+} from 'react-native';
+import {Formik} from 'formik';
+import * as yup from 'yup';
+import SignUp from './SignUp';
 
 const loginValidationSchema = yup.object().shape({
   email: yup
     .string()
-    .email("Please enter valid email")
+    .email('Please enter valid email')
     .required('Email Address is Required'),
+  pan: yup
+    .string()
+    .matches(/[A-Z]{5}[0-9]{4}[A-Z]{1}/gm)
+    .required('PAN number is Required'),
   password: yup
     .string()
-    .min(8, ({ min }) => `Password must be at least ${min} characters`)
+    .min(8, ({min}) => `Password must be at least ${min} characters`)
     .required('Password is required'),
-})
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Password must mathc')
+    .required('Password is required'),
+});
 
 const App = () => {
   return (
@@ -34,9 +44,13 @@ const App = () => {
           <Formik
             validateOnMount={true}
             validationSchema={loginValidationSchema}
-            initialValues={{ email: '', password: '' }}
-            onSubmit={values => console.log(values)}
-          >
+            initialValues={{
+              email: '',
+              password: '',
+              pan: '',
+              confirmPassword: '',
+            }}
+            onSubmit={(values) => console.log(values)}>
             {({
               handleChange,
               handleBlur,
@@ -56,10 +70,20 @@ const App = () => {
                   value={values.email}
                   keyboardType="email-address"
                 />
-                {(errors.email && touched.email) &&
+                {errors.email && touched.email && (
                   <Text style={styles.errorText}>{errors.email}</Text>
-                }
-
+                )}
+                <TextInput
+                  name="pan"
+                  placeholder="PAN number"
+                  style={styles.textInput}
+                  onChangeText={handleChange('pan')}
+                  onBlur={handleBlur('pan')}
+                  value={values.pan}
+                />
+                {errors.pan && touched.pan && (
+                  <Text style={styles.errorText}>{errors.pan}</Text>
+                )}
                 <TextInput
                   name="password"
                   placeholder="Password"
@@ -69,11 +93,22 @@ const App = () => {
                   value={values.password}
                   secureTextEntry
                 />
-                {(errors.password && touched.password) &&
+                {errors.password && touched.password && (
                   <Text style={styles.errorText}>{errors.password}</Text>
-                }
-
-                <Button 
+                )}
+                <TextInput
+                  name="confirm_password"
+                  placeholder="ConfirmPassword"
+                  style={styles.textInput}
+                  onChangeText={handleChange('confirmPassword')}
+                  onBlur={handleBlur('confirmPassword')}
+                  value={values.confirmPassword}
+                  secureTextEntry
+                />
+                {errors.confirmPassword && touched.confirmPassword && (
+                  <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+                )}
+                <Button
                   onPress={handleSubmit}
                   title="LOGIN"
                   disabled={!isValid || values.email === ''}
@@ -84,8 +119,8 @@ const App = () => {
         </View>
       </SafeAreaView>
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -99,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     elevation: 10,
-    backgroundColor: '#e6e6e6'
+    backgroundColor: '#e6e6e6',
   },
   textInput: {
     height: 40,
@@ -114,6 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'red',
   },
-})
+});
 
-export default App
+export default App;

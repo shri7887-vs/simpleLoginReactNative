@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,39 +6,41 @@ import {
   Text,
   StatusBar,
   Button,
-} from 'react-native'
-import { Formik, Field } from 'formik'
-import * as yup from 'yup'
+} from 'react-native';
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
 
-import CustomInput from './CustomInput'
-
+import CustomInput from './CustomInput';
 
 const signUpValidationSchema = yup.object().shape({
   fullName: yup
     .string()
     .matches(/(\w.+\s).+/, 'Enter at least 2 names')
     .required('Full name is required'),
-  phoneNumber: yup
-    .string()
-    .matches(/(01)(\d){8}\b/, 'Enter a valid phone number')
-    .required('Phone number is required'),
+  // phoneNumber: yup
+  //   .string()
+  //   .matches(/(01)(\d){8}\b/, 'Enter a valid phone number')
+  //   .required('Phone number is required'),
   email: yup
     .string()
-    .email("Please enter valid email")
+    .email('Please enter valid email')
     .required('Email is required'),
   password: yup
     .string()
-    .matches(/\w*[a-z]\w*/,  "Password must have a small letter")
-    .matches(/\w*[A-Z]\w*/,  "Password must have a capital letter")
-    .matches(/\d/, "Password must have a number")
-    .matches(/[!@#$%^&*()\-_"=+{}; :,<.>]/, "Password must have a special character")
-    .min(8, ({ min }) => `Passowrd must be at least ${min} characters`)
+    .matches(/\w*[a-z]\w*/, 'Password must have a small letter')
+    .matches(/\w*[A-Z]\w*/, 'Password must have a capital letter')
+    .matches(/\d/, 'Password must have a number')
+    .matches(
+      /[!@#$%^&*()\-_"=+{}; :,<.>]/,
+      'Password must have a special character',
+    )
+    .min(8, ({min}) => `Passowrd must be at least ${min} characters`)
     .required('Password is required'),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password')], 'Passwords do not match')
     .required('Confirm password is required'),
-})
+});
 
 const App = () => {
   return (
@@ -57,9 +59,8 @@ const App = () => {
               password: '',
               confirmPassword: '',
             }}
-            onSubmit={values => console.log(values)}
-          >
-            {({ handleSubmit, isValid, values }) => (
+            onSubmit={(values) => console.log(values)}>
+            {({handleSubmit, isValid, values}) => (
               <>
                 <Field
                   component={CustomInput}
@@ -72,12 +73,12 @@ const App = () => {
                   placeholder="Email Address"
                   keyboardType="email-address"
                 />
-                <Field
+                {/* <Field
                   component={CustomInput}
                   name="phoneNumber"
                   placeholder="Phone Number"
                   keyboardType="numeric"
-                />
+                /> */}
                 <Field
                   component={CustomInput}
                   name="password"
@@ -91,8 +92,7 @@ const App = () => {
                   secureTextEntry
                 />
 
-
-                <Button 
+                <Button
                   onPress={handleSubmit}
                   title="SIGN UP"
                   disabled={!isValid || values.email === ''}
@@ -103,8 +103,8 @@ const App = () => {
         </View>
       </SafeAreaView>
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
     elevation: 10,
-    backgroundColor: '#e6e6e6'
+    backgroundColor: '#e6e6e6',
   },
-})
+});
 
-export default App
+export default App;
